@@ -7,7 +7,11 @@ Setting up Openshift
 
 Create the Openshift application with a DIY and Postgresql 8.4 cartridge (also works on MySQL and SQLite out-of-the-box):
 
-    $ rhc app create exampleapp diy-0.1 postgresql-8.4 --from-code https://github.com/seedofjoy/openshift-diy-nginx-uwsgi-django.git
+    $ rhc app create <exampleapp> diy-0.1 postgresql-8.4
+    $ cd <exampleapp>
+    $ git remote add upstream -m master git://github.com/seedofjoy/openshift-diy-nginx-uwsgi-django.git
+    $ git pull -s recursive -X theirs upstream master
+    $ git push
 
 
 Configuration
