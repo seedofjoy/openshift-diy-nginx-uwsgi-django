@@ -1,0 +1,43 @@
+#!/bin/bash
+# This is a simple script and will be executed on your CI system if 
+# available.  Otherwise it will execute while your application is stopped
+# before the build step.  This script gets executed directly, so it
+# could be python, php, ruby, etc.
+
+PYTHON_VERSION="2.7.4"
+VIRTUALENV_VERSION="1.9.1"
+PCRE_VERSION="8.32"
+NGINX_VERSION="1.4.0"
+
+PYTHON_CURRENT=`${OPENSHIFT_DATA_DIR}/bin/python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
+if [ "$PYTHON_CURRENT" != "$PYTHON_VERSION" ]; then
+	cd $OPENSHIFT_TMP_DIR
+	wget http://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.bz2
+	tar jxf Python-${PYTHON_VERSION}.tar.bz2
+	cd Python-${PYTHON_VERSION}
+	./configure --prefix=$OPENSHIFT_DATA_DIR
+	make install
+fi
+  
+if [ ! -d $OPENSHIFT_DATA_DIR/virtualenv ]; then
+	cd $OPENSHIFT_TMP_DIR
+	wget https://pypi.python.org/packages/source/v/virtualenv/virtualenv-${VIRTUALENV_VERSION}.tar.gz
+	tar zxf virtualenv-${VIRTUALENV_VERSION}.tar.gz
+	cd virtualenv-${VIRTUALENV_VERSION}
+	$OPENSHIFT_DATA_DIR/bin/python virtualenv.py $OPENSHIFT_DATA_DIR/virtualenv
+fi
+
+if [ ! -d $OPENSHIFT_DATA_DIR/nginx/sbin ]; then
+    cd $OPENSHIFT_TMP_DIR
+    wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${PCRE_VERSION}.tar.gz
+    wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+    tar -xvf pcre-${PCRE_VERSION}.tar.gz
+    tar -xvf nginx-${NGINX_VERSION}.tar.gz
+    cd nginx-${NGINX_VERSION}
+    mkdir $OPENSHIFT_DATA_DIR/nginx
+    ./configure --prefix=$OPENSHIFT_DATA_DIR/nginx --with-pcre=$OPENSHIFT_TMP_DIR/pcre-${PCRE_VERSION}
+    make && make install && make clean
+fi
+
+# cleanup
+rm -rf $OPENSHIFT_TMP_DIR/*

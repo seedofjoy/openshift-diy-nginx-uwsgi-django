@@ -1,0 +1,23 @@
+#!/bin/bash
+# This deploy hook gets executed after dependencies are resolved and the
+# build hook has been run but before the application has been started back
+# up again.  This script gets executed directly, so it could be python, php,
+# ruby, etc.
+
+function substitute_variables() {
+	sed -e "s@\$OPENSHIFT_DIY_LOG_DIR@$OPENSHIFT_DIY_LOG_DIR@" \
+		-e "s@\$OPENSHIFT_TMP_DIR@$OPENSHIFT_TMP_DIR@" \
+		-e "s@\$OPENSHIFT_REPO_DIR@$OPENSHIFT_REPO_DIR@" \
+		-e "s@\$OPENSHIFT_DATA_DIR@$OPENSHIFT_DATA_DIR@" \
+		-e "s@\$OPENSHIFT_INTERNAL_IP@$OPENSHIFT_INTERNAL_IP@" \
+		-e "s@\$OPENSHIFT_INTERNAL_PORT@$OPENSHIFT_INTERNAL_PORT@" \
+		-e "s@\$APP_NAME@`cat $OPENSHIFT_REPO_DIR/.appname`@" \
+        $1 > $2
+}
+
+source $OPENSHIFT_DATA_DIR/virtualenv/bin/activate
+mkdir -p $OPENSHIFT_DATA_DIR/configs
+mkdir -p $OPENSHIFT_DATA_DIR/static/static
+mkdir -p $OPENSHIFT_DATA_DIR/static/media
+substitute_variables $OPENSHIFT_REPO_DIR/configs/nginx.conf $OPENSHIFT_DATA_DIR/nginx/conf/nginx.conf
+substitute_variables $OPENSHIFT_REPO_DIR/configs/uwsgi.yaml $OPENSHIFT_DATA_DIR/configs/uwsgi.yaml
