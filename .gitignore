@@ -1,1 +1,3 @@
 *.py[cod]
+app/app/sqlite3.db
+app/app/static/
