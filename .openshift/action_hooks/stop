@@ -4,5 +4,6 @@
 source $OPENSHIFT_DATA_DIR/virtualenv/bin/activate
 $OPENSHIFT_DATA_DIR/nginx/sbin/nginx -s stop
 uwsgi --stop $OPENSHIFT_TMP_DIR/uwsgi.pid
+killall memcached
 
 exit 0

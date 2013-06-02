@@ -8,6 +8,7 @@ PYTHON_VERSION="2.7.4"
 VIRTUALENV_VERSION="1.9.1"
 PCRE_VERSION="8.32"
 NGINX_VERSION="1.4.0"
+MEMCACHED_VERSION="1.4.15"
 
 PYTHON_CURRENT=`${OPENSHIFT_DATA_DIR}/bin/python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
 if [ "$PYTHON_CURRENT" != "$PYTHON_VERSION" ]; then
@@ -37,6 +38,15 @@ if [ ! -d $OPENSHIFT_DATA_DIR/nginx/sbin ]; then
     mkdir $OPENSHIFT_DATA_DIR/nginx
     ./configure --prefix=$OPENSHIFT_DATA_DIR/nginx --with-pcre=$OPENSHIFT_TMP_DIR/pcre-${PCRE_VERSION} --with-http_realip_module
     make && make install && make clean
+fi
+
+if [ ! -f $OPENSHIFT_DATA_DIR/bin/memcached ]; then
+    cd $OPENSHIFT_TMP_DIR
+    wget http://memcached.googlecode.com/files/memcached-${MEMCACHED_VERSION}.tar.gz
+    tar zxf memcached-${MEMCACHED_VERSION}.tar.gz
+    cd memcached-${MEMCACHED_VERSION}
+    ./configure --prefix=$OPENSHIFT_DATA_DIR
+    make && make install
 fi
 
 # cleanup
