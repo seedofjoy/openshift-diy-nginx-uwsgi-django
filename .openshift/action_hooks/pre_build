@@ -35,7 +35,7 @@ if [ ! -d $OPENSHIFT_DATA_DIR/nginx/sbin ]; then
     tar -xvf nginx-${NGINX_VERSION}.tar.gz
     cd nginx-${NGINX_VERSION}
     mkdir $OPENSHIFT_DATA_DIR/nginx
-    ./configure --prefix=$OPENSHIFT_DATA_DIR/nginx --with-pcre=$OPENSHIFT_TMP_DIR/pcre-${PCRE_VERSION}
+    ./configure --prefix=$OPENSHIFT_DATA_DIR/nginx --with-pcre=$OPENSHIFT_TMP_DIR/pcre-${PCRE_VERSION} --with-http_realip_module
     make && make install && make clean
 fi
 
