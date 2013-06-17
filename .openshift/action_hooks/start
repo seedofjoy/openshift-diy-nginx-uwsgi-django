@@ -4,6 +4,9 @@
 # $OPENSHIFT_INTERNAL_IP:8080
 
 source $OPENSHIFT_DATA_DIR/virtualenv/bin/activate
+export LANG='en_US.UTF-8'
+export LC_ALL='en_US.UTF-8'
+export LC_LANG='en_US.UTF-8'
 nohup $OPENSHIFT_DATA_DIR/nginx/sbin/nginx -c $OPENSHIFT_DATA_DIR/nginx/conf/nginx.conf > $OPENSHIFT_DIY_LOG_DIR/server.log 2>&1 &
 nohup uwsgi --yaml $OPENSHIFT_DATA_DIR/configs/uwsgi.yaml -d $OPENSHIFT_DIY_LOG_DIR/app.log
 nohup $OPENSHIFT_DATA_DIR/bin/memcached -l $OPENSHIFT_INTERNAL_IP -p 18080 -d
