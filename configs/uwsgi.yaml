@@ -1,5 +1,5 @@
 uwsgi:
-    socket: $OPENSHIFT_INTERNAL_IP:15005
+    socket: $OPENSHIFT_DIY_IP:15005
     pidfile: $OPENSHIFT_TMP_DIR/uwsgi.pid
     pythonpath: $OPENSHIFT_REPO_DIR/$APP_NAME
     module: $APP_NAME.wsgi:application
